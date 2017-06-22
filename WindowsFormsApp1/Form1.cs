@@ -42,11 +42,13 @@ namespace WindowsFormsApp1
             //element2.Click();
             
             IWebElement UserNameText = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
-            UserNameText.SendKeys(textUserName.Text);
+            // UserNameText.SendKeys(textUserName.Text); jpet007
+            UserNameText.SendKeys("jpet007");
             IWebElement PasswordText = driver.FindElement(By.XPath("html/body/div[1]/div/div[1]/div/div[1]/div[2]/div/div[2]/input[1]"));
             PasswordText.Click();
             IWebElement PasswordText2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[1]/div/div[1]/div[2]/div/div[2]/input[2]"));
-            PasswordText2.SendKeys(textPassword.Text);
+            // PasswordText2.SendKeys(textPassword.Text);
+            PasswordText2.SendKeys("Th1sissoamazing");
             IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_LoginBtn"));
             element2.Click();
 
@@ -65,6 +67,25 @@ namespace WindowsFormsApp1
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            IWebElement element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[15]"));
+            element.Click();
+            System.Threading.Thread.Sleep(1000);
+            try
+            {
+                IWebElement element2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[3]/div"));
+                element2.Click();
+                //element2.Click();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
+           
         }
     }
 }
