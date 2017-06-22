@@ -15,7 +15,6 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-
         /*WebBrowser wb = new WebBrowser();
         public event WebBrowserDocumentCompletedEventHandler DocumentCompleted;*/
         IWebDriver driver = new ChromeDriver();
@@ -28,13 +27,12 @@ namespace WindowsFormsApp1
             element.Click();
             System.Threading.Thread.Sleep(3000);
             label4.Text = driver.Title;
-            var dictionary = File.ReadLines(@"C:\Users\John\Documents\Visual Studio 2013\BBot\Football.csv").Select(line => line.Split(','));
+            var dictionary = File.ReadLines(@"C:\Users\John\Documents\Visual Studio 2017\Projects\WindowsFormsApp1\Football.csv").Select(line => line.Split(','));
             foreach (string[] e in dictionary)
             {
                 dict.Add(e[0].ToString() , e[1].ToString());                
             }
-          //  System.Threading.Thread.Sleep(3000);
-
+            //System.Threading.Thread.Sleep(3000);
             //browserView.Browser.LoadURL("http://www.google.com");
         }
 
@@ -42,38 +40,24 @@ namespace WindowsFormsApp1
         {
             /* wb.DocumentCompleted +=
        new WebBrowserDocumentCompletedEventHandler(Wb_DocumentCompleted);*/
-
-
             // IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
             //element2.Click();
-
             IWebElement UserNameText = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
-            // UserNameText.SendKeys(textUserName.Text); jpet007
-            UserNameText.SendKeys("jpet007");
+            // UserNameText.SendKeys(textUserName.Text);             
             IWebElement PasswordText = driver.FindElement(By.XPath("html/body/div[1]/div/div[1]/div/div[1]/div[2]/div/div[2]/input[1]"));
             PasswordText.Click();
             IWebElement PasswordText2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[1]/div/div[1]/div[2]/div/div[2]/input[2]"));
             // PasswordText2.SendKeys(textPassword.Text);
-            PasswordText2.SendKeys("Th1sissoamazing");
             IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_LoginBtn"));
             element2.Click();
-
-
         }
 
         private void Wb_DocumentCompleted(Object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-
             // Print the document now that it is fully loaded.
             ((WebBrowser)sender).Print();
             // Dispose the WebBrowser now that the task is complete. 
             ((WebBrowser)sender).Dispose();
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -93,26 +77,33 @@ namespace WindowsFormsApp1
             IWebElement element;
             string printer="";
             List<string> games = new List<string>();
-            if (dict.ContainsKey(country))
+            try
             {
-                element = driver.FindElement(By.XPath(dict[country].ToString()));
-                element.Click();
-                sleep300();
-                if (dict.ContainsKey(division))
+                if (dict.ContainsKey(country))
                 {
-                    element = driver.FindElement(By.XPath(dict[division]));
+                    element = driver.FindElement(By.XPath(dict[country].ToString()));
                     element.Click();
-                    flag = true;
+                    sleep300();
+                    if (dict.ContainsKey(division))
+                    {
+                        element = driver.FindElement(By.XPath(dict[division]));
+                        element.Click();
+                        flag = true;
+                    }
                 }
+            }catch(NoSuchElementException ex)
+            {
+             //   MessageBox.Show("1");
             }
-
-            if (true)
+            if (flag)
             {
                 i = 2;
                 try
                 {
                     while (true)
                     {
+                        sleep300();
+                        sleep300();
                         element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
                         i++;
                         games.Add(element.Text);
@@ -122,7 +113,7 @@ namespace WindowsFormsApp1
                 }
                 catch (NoSuchElementException ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                  //  MessageBox.Show("2");
                 }        
 
             }
@@ -158,9 +149,46 @@ namespace WindowsFormsApp1
             element.Click();
         }
 
-        private void label5_Click(object sender, EventArgs e)
+        private void oneXTwo(string result)
         {
-
+            sleep300();
+            IWebElement element;
+            switch (result)
+            {
+                case "1":
+                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
+                    element.Click();
+                    break;
+                case "X":
+                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[2]"));
+                    element.Click();
+                    break;
+                case "2":
+                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[3]"));
+                    element.Click();
+                    break;
+                default:
+                    break;
+            }            
         }
+
+        private void overUnder(string overunder)
+        {
+            sleep300();
+            IWebElement element;
+            switch (overunder)
+            {
+                case "over":
+                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
+                    element.Click();
+                    break;
+                case "under":
+                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[3]/div[2]"));
+                    element.Click();
+                    break;
+                default:
+                    break;
+            }
+        }       
     }
 }
