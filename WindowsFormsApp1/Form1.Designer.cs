@@ -31,13 +31,15 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textUserName = new System.Windows.Forms.TextBox();
-            this.textPassword = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textPassword = new System.Windows.Forms.TextBox();
+            this.textUserName = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,6 +65,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.textPassword);
@@ -79,23 +83,37 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
             // 
-            // label2
+            // button3
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(463, 64);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Password";
+            this.button3.Location = new System.Drawing.Point(13, 80);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 8;
+            this.button3.Text = "Football Nav";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // label3
+            // label4
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(463, 26);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Player Name";
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(88, 25);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(0, 13);
+            this.label4.TabIndex = 7;
+            // 
+            // textPassword
+            // 
+            this.textPassword.Location = new System.Drawing.Point(542, 57);
+            this.textPassword.Name = "textPassword";
+            this.textPassword.Size = new System.Drawing.Size(100, 20);
+            this.textPassword.TabIndex = 6;
+            // 
+            // textUserName
+            // 
+            this.textUserName.Location = new System.Drawing.Point(542, 19);
+            this.textUserName.Name = "textUserName";
+            this.textUserName.Size = new System.Drawing.Size(100, 20);
+            this.textUserName.TabIndex = 5;
             // 
             // button2
             // 
@@ -106,37 +124,42 @@
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // textUserName
+            // label3
             // 
-            this.textUserName.Location = new System.Drawing.Point(542, 19);
-            this.textUserName.Name = "textUserName";
-            this.textUserName.Size = new System.Drawing.Size(100, 20);
-            this.textUserName.TabIndex = 5;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(463, 26);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Player Name";
             // 
-            // textPassword
+            // label2
             // 
-            this.textPassword.Location = new System.Drawing.Point(542, 57);
-            this.textPassword.Name = "textPassword";
-            this.textPassword.Size = new System.Drawing.Size(100, 20);
-            this.textPassword.TabIndex = 6;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(463, 64);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Password";
             // 
-            // label4
+            // label5
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(88, 25);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(0, 13);
-            this.label4.TabIndex = 7;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 115);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(43, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Games:";
+            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
-            // button3
+            // label6
             // 
-            this.button3.Location = new System.Drawing.Point(6, 85);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "Football Nav";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(63, 115);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(35, 13);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "label6";
             // 
             // Form1
             // 
@@ -164,6 +187,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }
 

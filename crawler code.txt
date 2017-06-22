@@ -1,0 +1,16 @@
+ int i = 1;
+            try
+            {
+                IWebElement element2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[15]/div/div"));
+                element2.Click();
+                while (true)
+                {
+                    element2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[15]/div[2]/div["+i+"]/div[2]"));
+                    z.Add(element2.Text);                  
+                    i++;
+                }
+            }
+            catch (NoSuchElementException elementException)
+            {
+            }
+            File.WriteAllLines(@"C:\Users\John\Documents\Visual Studio 2013\BBot\test.txt", z);   

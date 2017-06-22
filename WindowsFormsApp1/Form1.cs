@@ -9,15 +9,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
+using System.IO;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        
+
         /*WebBrowser wb = new WebBrowser();
         public event WebBrowserDocumentCompletedEventHandler DocumentCompleted;*/
-        IWebDriver driver = new ChromeDriver(); 
+        IWebDriver driver = new ChromeDriver();
+        Dictionary<string, string> dict = new Dictionary<string, string>();
         public Form1()
         {
             InitializeComponent();
@@ -26,8 +28,12 @@ namespace WindowsFormsApp1
             element.Click();
             System.Threading.Thread.Sleep(3000);
             label4.Text = driver.Title;
-
-
+            var dictionary = File.ReadLines(@"C:\Users\John\Documents\Visual Studio 2013\BBot\Football.csv").Select(line => line.Split(','));
+            foreach (string[] e in dictionary)
+            {
+                dict.Add(e[0].ToString() , e[1].ToString());                
+            }
+          //  System.Threading.Thread.Sleep(3000);
 
             //browserView.Browser.LoadURL("http://www.google.com");
         }
@@ -36,11 +42,11 @@ namespace WindowsFormsApp1
         {
             /* wb.DocumentCompleted +=
        new WebBrowserDocumentCompletedEventHandler(Wb_DocumentCompleted);*/
-            
-            
-           // IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
+
+
+            // IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
             //element2.Click();
-            
+
             IWebElement UserNameText = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
             // UserNameText.SendKeys(textUserName.Text); jpet007
             UserNameText.SendKeys("jpet007");
@@ -52,16 +58,17 @@ namespace WindowsFormsApp1
             IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_LoginBtn"));
             element2.Click();
 
+
         }
 
         private void Wb_DocumentCompleted(Object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-           
+
             // Print the document now that it is fully loaded.
             ((WebBrowser)sender).Print();
             // Dispose the WebBrowser now that the task is complete. 
             ((WebBrowser)sender).Dispose();
-            
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -71,21 +78,89 @@ namespace WindowsFormsApp1
 
         private void button3_Click(object sender, EventArgs e)
         {
-            IWebElement element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[15]"));
-            element.Click();
+            List<string> z = new List<string>();
+            navigateToFootball();
+
             System.Threading.Thread.Sleep(1000);
-            try
+            closeOpenDivs();
+            navigateBeforeBet("Ην. Βασίλειο","Αγγλία - Πρέμιερ Λιγκ");
+        }
+
+        private void navigateBeforeBet(string country, string division)
+        {
+            bool flag = false;
+            int i;
+            IWebElement element;
+            string printer="";
+            List<string> games = new List<string>();
+            if (dict.ContainsKey(country))
             {
-                IWebElement element2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[3]/div"));
-                element2.Click();
-                //element2.Click();
+                element = driver.FindElement(By.XPath(dict[country].ToString()));
+                element.Click();
+                sleep300();
+                if (dict.ContainsKey(division))
+                {
+                    element = driver.FindElement(By.XPath(dict[division]));
+                    element.Click();
+                    flag = true;
+                }
             }
-            catch(Exception ex)
+
+            if (true)
             {
+                i = 2;
+                try
+                {
+                    while (true)
+                    {
+                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
+                        i++;
+                        games.Add(element.Text);
+                        printer += element.Text;
+                        printer += "\n";
+                    }
+                }
+                catch (NoSuchElementException ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }        
 
             }
-            
-           
+
+ 
+            label6.Text = printer;
+        }
+
+        private void closeOpenDivs()
+        {
+            IWebElement element;
+            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
+            element.Click();
+            sleep300();
+            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[2]/div[1]/div"));
+            element.Click();
+            System.Threading.Thread.Sleep(300);
+            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
+            element.Click();
+            System.Threading.Thread.Sleep(300);
+            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
+            element.Click();
+        }
+
+        private static void sleep300()
+        {
+            System.Threading.Thread.Sleep(300);
+        }
+
+        private void navigateToFootball()
+        {
+            IWebElement element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[15]"));
+            element.Click();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
