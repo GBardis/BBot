@@ -63,6 +63,7 @@ namespace WindowsFormsApp1
         private void button3_Click(object sender, EventArgs e)
         {
             List<string> z = new List<string>();
+            label7.Text = "";
             navigateToFootball();
 
             System.Threading.Thread.Sleep(1000);
@@ -77,6 +78,11 @@ namespace WindowsFormsApp1
             IWebElement element;
             string printer="";
             List<string> games = new List<string>();
+            List<IWebElement> elements = new List<IWebElement>();
+
+            sleep300();
+            sleep300();
+            sleep300();
             try
             {
                 if (dict.ContainsKey(country))
@@ -100,15 +106,15 @@ namespace WindowsFormsApp1
                 i = 2;
                 try
                 {
+                    sleep300();
+                    sleep300();
                     while (true)
-                    {
-                        sleep300();
-                        sleep300();
+                    {                        
                         element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
                         i++;
-                        games.Add(element.Text);
+                        elements.Add(element);
                         printer += element.Text;
-                        printer += "\n";
+                        printer += "\n";                        
                     }
                 }
                 catch (NoSuchElementException ex)
@@ -116,26 +122,33 @@ namespace WindowsFormsApp1
                   //  MessageBox.Show("2");
                 }        
 
-            }
-
+            }         
  
             label6.Text = printer;
+            elements[1].Click();
+            overUnder("over");
+            placeMaxBet();
         }
 
         private void closeOpenDivs()
         {
             IWebElement element;
-            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            element.Click();
-            sleep300();
-            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[2]/div[1]/div"));
-            element.Click();
-            System.Threading.Thread.Sleep(300);
-            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
-            element.Click();
-            System.Threading.Thread.Sleep(300);
-            element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
-            element.Click();
+            try
+            {
+                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
+                element.Click();
+                sleep300();
+                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[2]/div[1]/div"));
+                element.Click();
+                System.Threading.Thread.Sleep(300);
+                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
+                element.Click();
+                System.Threading.Thread.Sleep(300);
+                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
+                element.Click();
+            }
+            catch(NoSuchElementException ex)
+            { }
         }
 
         private static void sleep300()
@@ -153,7 +166,9 @@ namespace WindowsFormsApp1
         {
             sleep300();
             IWebElement element;
-            switch (result)
+            try
+            {
+                switch (result)
             {
                 case "1":
                     element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
@@ -169,25 +184,61 @@ namespace WindowsFormsApp1
                     break;
                 default:
                     break;
-            }            
+            }
+            }
+            catch (NoSuchElementException ex)
+            {
+
+            }
         }
 
+        private void placeMaxBet()
+        {
+            List<IWebElement> LOT = new List<IWebElement>();
+            sleep300();
+            sleep300();
+            sleep300();
+            sleep300();
+            sleep300();
+            sleep300();
+            sleep300();          
+          
+            LOT = driver.FindElements(By.XPath(".//*")).ToList<IWebElement>();
+            sleep300();
+            driver.SwitchTo().Frame(driver.FindElement(By.TagName("iframe")));
+            sleep300();
+            IWebElement iframeElement = driver.FindElement(By.XPath("html/body/div[1]/div/ul/li[3]/ul/li/div[3]/div[2]/span"));
+            iframeElement.Click();
+            iframeElement = driver.FindElement(By.XPath("html/body/div[1]/div/ul/li[8]/a[2]/div"));
+            iframeElement.Click();
+            sleep300();
+            driver.SwitchTo().DefaultContent();
+            
+        }
         private void overUnder(string overunder)
         {
             sleep300();
+            sleep300();
             IWebElement element;
-            switch (overunder)
+            try
             {
-                case "over":
-                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
-                    element.Click();
-                    break;
-                case "under":
-                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[3]/div[2]"));
-                    element.Click();
-                    break;
-                default:
-                    break;
+                switch (overunder)
+                {
+                    case "over":
+                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
+                        element.Click();
+                        break;
+                    case "under":
+                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[3]/div[2]"));
+                        element.Click();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch(NoSuchElementException ex)
+            {
+
             }
         }       
     }
