@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System.IO;
 
 namespace WindowsFormsApp1
@@ -27,10 +28,10 @@ namespace WindowsFormsApp1
             element.Click();
             System.Threading.Thread.Sleep(3000);
             label4.Text = driver.Title;
-            var dictionary = File.ReadLines(@"C:\Users\John\Documents\Visual Studio 2017\Projects\WindowsFormsApp1\Football.csv").Select(line => line.Split(','));
+            var dictionary = File.ReadLines(@"C:\Users\George-PC\Documents\Visual Studio 2017\Projects\BBot\BBot\Football.csv").Select(line => line.Split(','));
             foreach (string[] e in dictionary)
             {
-                dict.Add(e[0].ToString() , e[1].ToString());                
+                dict.Add(e[0].ToString(), e[1].ToString());
             }
             //System.Threading.Thread.Sleep(3000);
             //browserView.Browser.LoadURL("http://www.google.com");
@@ -68,7 +69,7 @@ namespace WindowsFormsApp1
 
             System.Threading.Thread.Sleep(1000);
             closeOpenDivs();
-            navigateBeforeBet("Ην. Βασίλειο","Αγγλία - Πρέμιερ Λιγκ");
+            navigateBeforeBet("Ην. Βασίλειο", "Αγγλία - Πρέμιερ Λιγκ");
         }
 
         private void navigateBeforeBet(string country, string division)
@@ -76,20 +77,17 @@ namespace WindowsFormsApp1
             bool flag = false;
             int i;
             IWebElement element;
-            string printer="";
+            string printer = "";
             List<string> games = new List<string>();
             List<IWebElement> elements = new List<IWebElement>();
-
-            sleep300();
-            sleep300();
-            sleep300();
+            sleep();
             try
             {
                 if (dict.ContainsKey(country))
                 {
                     element = driver.FindElement(By.XPath(dict[country].ToString()));
                     element.Click();
-                    sleep300();
+                    sleep();
                     if (dict.ContainsKey(division))
                     {
                         element = driver.FindElement(By.XPath(dict[division]));
@@ -97,35 +95,38 @@ namespace WindowsFormsApp1
                         flag = true;
                     }
                 }
-            }catch(NoSuchElementException ex)
-            {
-             //   MessageBox.Show("1");
             }
-            if (flag)
+            catch (ElementNotVisibleException ex)
+            {
+                sleep();
+                element = driver.FindElement(By.XPath(dict[division]));
+                element.Click();
+                //   MessageBox.Show("1");
+            }
+            if (true)
             {
                 i = 2;
                 try
                 {
-                    sleep300();
-                    sleep300();
+                    sleep();
                     while (true)
-                    {                        
+                    {
                         element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
                         i++;
                         elements.Add(element);
                         printer += element.Text;
-                        printer += "\n";                        
+                        printer += "\n";
                     }
                 }
                 catch (NoSuchElementException ex)
                 {
-                  //  MessageBox.Show("2");
-                }        
 
-            }         
- 
+                }
+
+            }
+
             label6.Text = printer;
-            elements[1].Click();
+            elements[0].Click();
             overUnder("over");
             placeMaxBet();
         }
@@ -135,56 +136,71 @@ namespace WindowsFormsApp1
             IWebElement element;
             try
             {
-                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-                element.Click();
-                sleep300();
-                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[2]/div[1]/div"));
-                element.Click();
-                System.Threading.Thread.Sleep(300);
-                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
-                element.Click();
-                System.Threading.Thread.Sleep(300);
-                element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
-                element.Click();
+                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
+                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
+                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
+                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
             }
-            catch(NoSuchElementException ex)
+            catch (NoSuchElementException ex)
             { }
         }
 
-        private static void sleep300()
+        private void sleep()
         {
             System.Threading.Thread.Sleep(300);
+
+        }
+        public void WaitForElementVisible(By locator)
+        {
+            bool NotEnabled = true;
+            while (NotEnabled)
+            {
+                try { 
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(50));
+                IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementIsVisible(locator));
+                    if (element.Enabled)
+                    {
+                        NotEnabled = false;
+                        element.Click();
+                        break;
+                    }
+                }
+                catch
+                {
+                    NotEnabled = true;
+                }
+               
+            }
         }
 
         private void navigateToFootball()
         {
-            IWebElement element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[15]"));
-            element.Click();
+            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[15]"));
         }
 
         private void oneXTwo(string result)
         {
-            sleep300();
+            sleep();
             IWebElement element;
             try
             {
                 switch (result)
-            {
-                case "1":
-                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
-                    element.Click();
-                    break;
-                case "X":
-                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[2]"));
-                    element.Click();
-                    break;
-                case "2":
-                    element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[3]"));
-                    element.Click();
-                    break;
-                default:
-                    break;
-            }
+                {
+                    case "1":
+                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
+                        element.Click();
+                        break;
+                    case "X":
+                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[2]"));
+                        element.Click();
+                        break;
+                    case "2":
+                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[3]"));
+                        element.Click();
+                        break;
+                    default:
+                        break;
+                }
             }
             catch (NoSuchElementException ex)
             {
@@ -195,30 +211,22 @@ namespace WindowsFormsApp1
         private void placeMaxBet()
         {
             List<IWebElement> LOT = new List<IWebElement>();
-            sleep300();
-            sleep300();
-            sleep300();
-            sleep300();
-            sleep300();
-            sleep300();
-            sleep300();          
-          
+            sleep();
+
             LOT = driver.FindElements(By.XPath(".//*")).ToList<IWebElement>();
-            sleep300();
+            sleep();
             driver.SwitchTo().Frame(driver.FindElement(By.TagName("iframe")));
-            sleep300();
+            sleep();
             IWebElement iframeElement = driver.FindElement(By.XPath("html/body/div[1]/div/ul/li[3]/ul/li/div[3]/div[2]/span"));
             iframeElement.Click();
             iframeElement = driver.FindElement(By.XPath("html/body/div[1]/div/ul/li[8]/a[2]/div"));
             iframeElement.Click();
-            sleep300();
+            sleep();
             driver.SwitchTo().DefaultContent();
-            
         }
         private void overUnder(string overunder)
         {
-            sleep300();
-            sleep300();
+            sleep();
             IWebElement element;
             try
             {
@@ -236,10 +244,10 @@ namespace WindowsFormsApp1
                         break;
                 }
             }
-            catch(NoSuchElementException ex)
+            catch (NoSuchElementException ex)
             {
 
             }
-        }       
+        }
     }
 }
