@@ -155,9 +155,10 @@ namespace WindowsFormsApp1
             bool NotEnabled = true;
             while (NotEnabled)
             {
-                try { 
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(50));
-                IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementIsVisible(locator));
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(50));
+                    IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementIsVisible(locator));
                     if (element.Enabled)
                     {
                         NotEnabled = false;
@@ -165,11 +166,11 @@ namespace WindowsFormsApp1
                         break;
                     }
                 }
-                catch
+                catch(TimeoutException ex)
                 {
                     NotEnabled = true;
                 }
-               
+
             }
         }
 
