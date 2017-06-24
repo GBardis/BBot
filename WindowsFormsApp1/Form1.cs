@@ -20,6 +20,7 @@ namespace WindowsFormsApp1
         public event WebBrowserDocumentCompletedEventHandler DocumentCompleted;*/
         IWebDriver driver = new ChromeDriver();
         Dictionary<string, string> dict = new Dictionary<string, string>();
+        public static IWebElement element;
         public Form1()
         {
             InitializeComponent();
@@ -66,8 +67,6 @@ namespace WindowsFormsApp1
             List<string> z = new List<string>();
             label7.Text = "";
             navigateToFootball();
-
-            System.Threading.Thread.Sleep(1000);
             closeOpenDivs();
             navigateBeforeBet("Ην. Βασίλειο", "Αγγλία - Πρέμιερ Λιγκ");
         }
@@ -76,53 +75,50 @@ namespace WindowsFormsApp1
         {
             bool flag = false;
             int i;
-            IWebElement element;
             string printer = "";
             List<string> games = new List<string>();
             List<IWebElement> elements = new List<IWebElement>();
-            sleep();
             try
             {
                 if (dict.ContainsKey(country))
                 {
-                    element = driver.FindElement(By.XPath(dict[country].ToString()));
-                    element.Click();
-                    sleep();
+                    WaitForElementVisible(By.XPath(dict[country].ToString()));
                     if (dict.ContainsKey(division))
                     {
-                        element = driver.FindElement(By.XPath(dict[division]));
-                        element.Click();
+                        WaitForElementVisible(By.XPath(dict[division]));
                         flag = true;
                     }
                 }
             }
             catch (ElementNotVisibleException ex)
             {
-                sleep();
-                element = driver.FindElement(By.XPath(dict[division]));
-                element.Click();
-                //   MessageBox.Show("1");
+                WaitForElementVisible(By.XPath(dict[division]));
             }
-            if (true)
+            if (flag)
             {
                 i = 2;
-                try
+                bool NotEnabled = true;
+                while (NotEnabled)
                 {
-                    sleep();
-                    while (true)
+                    try
                     {
-                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
-                        i++;
+                        WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                        // element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
+                        IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div")));
                         elements.Add(element);
                         printer += element.Text;
                         printer += "\n";
+                        i++;
+                    }
+                    catch (NoSuchElementException ex)
+                    {
+                        NotEnabled = false;
+                    }
+                    catch (WebDriverTimeoutException ex)
+                    {
+                        NotEnabled = false;
                     }
                 }
-                catch (NoSuchElementException ex)
-                {
-
-                }
-
             }
 
             label6.Text = printer;
@@ -133,16 +129,10 @@ namespace WindowsFormsApp1
 
         private void closeOpenDivs()
         {
-            IWebElement element;
-            try
-            {
-                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
-                WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
-            }
-            catch (NoSuchElementException ex)
-            { }
+            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
+            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
+            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
+            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
         }
 
         private void sleep()
@@ -157,20 +147,18 @@ namespace WindowsFormsApp1
             {
                 try
                 {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(50));
-                    IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementIsVisible(locator));
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(locator));
                     if (element.Enabled)
-                    {
-                        NotEnabled = false;
+                    {                       
                         element.Click();
-                        break;
-                    }
+                        NotEnabled = false;
+                    }                   
                 }
-                catch(TimeoutException ex)
+                catch (Exception ex)
                 {
                     NotEnabled = true;
                 }
-
             }
         }
 
@@ -181,23 +169,18 @@ namespace WindowsFormsApp1
 
         private void oneXTwo(string result)
         {
-            sleep();
-            IWebElement element;
             try
             {
                 switch (result)
                 {
                     case "1":
-                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
-                        element.Click();
+                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
                         break;
                     case "X":
-                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[2]"));
-                        element.Click();
+                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[2]"));
                         break;
                     case "2":
-                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[3]"));
-                        element.Click();
+                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[3]"));
                         break;
                     default:
                         break;
@@ -211,35 +194,37 @@ namespace WindowsFormsApp1
 
         private void placeMaxBet()
         {
-            List<IWebElement> LOT = new List<IWebElement>();
-            sleep();
+            bool FindFrame = true;
+            while (FindFrame)
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    wait.Until(ExpectedConditions.FrameToBeAvailableAndSwitchToIt(By.TagName("iframe")));
+                    driver.SwitchTo();
+                    WaitForElementVisible(By.XPath("html/body/div[1]/div/ul/li[3]/ul/li/div[3]/div[2]/span"));
+                    WaitForElementVisible(By.XPath("html/body/div[1]/div/ul/li[8]/a[2]/div"));
+                    driver.SwitchTo().DefaultContent();
+                    FindFrame = false;
+                }
+                catch (WebDriverTimeoutException ex)
+                {
+                    FindFrame = true;
+                }
+            }
 
-            LOT = driver.FindElements(By.XPath(".//*")).ToList<IWebElement>();
-            sleep();
-            driver.SwitchTo().Frame(driver.FindElement(By.TagName("iframe")));
-            sleep();
-            IWebElement iframeElement = driver.FindElement(By.XPath("html/body/div[1]/div/ul/li[3]/ul/li/div[3]/div[2]/span"));
-            iframeElement.Click();
-            iframeElement = driver.FindElement(By.XPath("html/body/div[1]/div/ul/li[8]/a[2]/div"));
-            iframeElement.Click();
-            sleep();
-            driver.SwitchTo().DefaultContent();
         }
         private void overUnder(string overunder)
         {
-            sleep();
-            IWebElement element;
             try
             {
                 switch (overunder)
                 {
                     case "over":
-                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
-                        element.Click();
+                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
                         break;
                     case "under":
-                        element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[3]/div[2]"));
-                        element.Click();
+                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[3]/div[2]"));
                         break;
                     default:
                         break;
