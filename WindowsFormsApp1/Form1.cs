@@ -16,8 +16,6 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        /*WebBrowser wb = new WebBrowser();
-        public event WebBrowserDocumentCompletedEventHandler DocumentCompleted;*/
         IWebDriver driver = new ChromeDriver();
         Dictionary<string, string> dict = new Dictionary<string, string>();
         public static IWebElement element;
@@ -29,27 +27,19 @@ namespace WindowsFormsApp1
             element.Click();
             System.Threading.Thread.Sleep(3000);
             label4.Text = driver.Title;
-            var dictionary = File.ReadLines(@"C:\Users\George-PC\Documents\Visual Studio 2017\Projects\BBot\BBot\Football.csv").Select(line => line.Split(','));
+            var dictionary = File.ReadLines(@"Football.csv").Select(line => line.Split(','));
             foreach (string[] e in dictionary)
             {
                 dict.Add(e[0].ToString(), e[1].ToString());
             }
-            //System.Threading.Thread.Sleep(3000);
-            //browserView.Browser.LoadURL("http://www.google.com");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            /* wb.DocumentCompleted +=
-       new WebBrowserDocumentCompletedEventHandler(Wb_DocumentCompleted);*/
-            // IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
-            //element2.Click();
             IWebElement UserNameText = driver.FindElement(By.CssSelector(".hm-Login_InputField"));
-            // UserNameText.SendKeys(textUserName.Text);             
             IWebElement PasswordText = driver.FindElement(By.XPath("html/body/div[1]/div/div[1]/div/div[1]/div[2]/div/div[2]/input[1]"));
             PasswordText.Click();
             IWebElement PasswordText2 = driver.FindElement(By.XPath("html/body/div[1]/div/div[1]/div/div[1]/div[2]/div/div[2]/input[2]"));
-            // PasswordText2.SendKeys(textPassword.Text);
             IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_LoginBtn"));
             element2.Click();
         }
@@ -64,11 +54,14 @@ namespace WindowsFormsApp1
 
         private void button3_Click(object sender, EventArgs e)
         {
+            string category = "Ποδόσφαιρο";
+            string country = "Ην. Βασίλειο";
+            string division = "Αγγλία - Πρέμιερ Λιγκ";
             List<string> z = new List<string>();
             label7.Text = "";
-            navigateToFootball();
+            FindCategory(category);
             closeOpenDivs();
-            navigateBeforeBet("Ην. Βασίλειο", "Αγγλία - Πρέμιερ Λιγκ");
+            navigateBeforeBet(country, division);
         }
 
         private void navigateBeforeBet(string country, string division)
@@ -103,8 +96,7 @@ namespace WindowsFormsApp1
                     try
                     {
                         WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                        // element = driver.FindElement(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div"));
-                        IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div")));
+                        element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div[2]/div/div[1]/div[" + i + "]/div[2]/div")));
                         elements.Add(element);
                         printer += element.Text;
                         printer += "\n";
@@ -148,12 +140,12 @@ namespace WindowsFormsApp1
                 try
                 {
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                    IWebElement element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(locator));
+                    element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(locator));
                     if (element.Enabled)
-                    {                       
+                    {
                         element.Click();
                         NotEnabled = false;
-                    }                   
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -162,9 +154,36 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void navigateToFootball()
+        private void FindCategory(string category)
         {
-            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[15]"));
+            int i = 1;
+            List<IWebElement> categories = new List<IWebElement>();
+            bool FoundCat = true;
+            while (FoundCat)
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[" + i + "]")));
+                    categories.Add(element);
+                    i++;
+                }
+                catch (NoSuchElementException ex)
+                {
+                    FoundCat = false;
+                }
+                catch (WebDriverTimeoutException ex)
+                {
+                    FoundCat = false;
+                }
+            }
+            foreach (var element in categories)
+            {
+                if (element.Text == category)
+                {
+                    element.Click();
+                }
+            }
         }
 
         private void oneXTwo(string result)
@@ -212,7 +231,6 @@ namespace WindowsFormsApp1
                     FindFrame = true;
                 }
             }
-
         }
         private void overUnder(string overunder)
         {
@@ -235,5 +253,5 @@ namespace WindowsFormsApp1
 
             }
         }
-    }
+    }  
 }
