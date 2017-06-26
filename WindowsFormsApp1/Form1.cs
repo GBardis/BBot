@@ -16,7 +16,8 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        IWebDriver driver = new ChromeDriver();
+        BetOption betoption = new BetOption();
+        public static IWebDriver driver = new ChromeDriver();
         Dictionary<string, string> dict = new Dictionary<string, string>();
         public static IWebElement element;
         public Form1()
@@ -54,14 +55,16 @@ namespace WindowsFormsApp1
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Navigation nav = new Navigation();
             string category = "Ποδόσφαιρο";
             string country = "Ην. Βασίλειο";
             string division = "Αγγλία - Πρέμιερ Λιγκ";
             List<string> z = new List<string>();
             label7.Text = "";
-            FindCategory(category);
-            closeOpenDivs();
+            nav.FindCategory(category);
+            betoption.closeOpenDivs();
             navigateBeforeBet(country, division);
+            driver.Navigate().Back();
         }
 
         private void navigateBeforeBet(string country, string division)
@@ -115,16 +118,9 @@ namespace WindowsFormsApp1
 
             label6.Text = printer;
             elements[0].Click();
-            overUnder("over");
-            placeMaxBet();
-        }
 
-        private void closeOpenDivs()
-        {
-            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
-            WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
+            betoption.overUnder("over");
+            placeMaxBet();
         }
 
         private void sleep()
@@ -132,7 +128,7 @@ namespace WindowsFormsApp1
             System.Threading.Thread.Sleep(300);
 
         }
-        public void WaitForElementVisible(By locator)
+        public static void WaitForElementVisible(By locator)
         {
             bool NotEnabled = true;
             while (NotEnabled)
@@ -147,70 +143,16 @@ namespace WindowsFormsApp1
                         NotEnabled = false;
                     }
                 }
-                catch (Exception ex)
+                catch (WebDriverTimeoutException ex)
                 {
                     NotEnabled = true;
                 }
-            }
-        }
-
-        private void FindCategory(string category)
-        {
-            int i = 1;
-            List<IWebElement> categories = new List<IWebElement>();
-            bool FoundCat = true;
-            while (FoundCat)
-            {
-                try
+                catch (NoSuchElementException)
                 {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                    element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[" + i + "]")));
-                    categories.Add(element);
-                    i++;
-                }
-                catch (NoSuchElementException ex)
-                {
-                    FoundCat = false;
-                }
-                catch (WebDriverTimeoutException ex)
-                {
-                    FoundCat = false;
-                }
-            }
-            foreach (var element in categories)
-            {
-                if (element.Text == category)
-                {
-                    element.Click();
+                    NotEnabled = false;
                 }
             }
         }
-
-        private void oneXTwo(string result)
-        {
-            try
-            {
-                switch (result)
-                {
-                    case "1":
-                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[1]"));
-                        break;
-                    case "X":
-                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[2]"));
-                        break;
-                    case "2":
-                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div[2]/div/div/div[3]"));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (NoSuchElementException ex)
-            {
-
-            }
-        }
-
         private void placeMaxBet()
         {
             bool FindFrame = true;
@@ -232,26 +174,5 @@ namespace WindowsFormsApp1
                 }
             }
         }
-        private void overUnder(string overunder)
-        {
-            try
-            {
-                switch (overunder)
-                {
-                    case "over":
-                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
-                        break;
-                    case "under":
-                        WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[3]/div[2]"));
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (NoSuchElementException ex)
-            {
-
-            }
-        }
-    }  
+    }
 }
