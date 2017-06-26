@@ -24,8 +24,8 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             driver.Navigate().GoToUrl("http://www.bet365.gr/#/HO");
-            IWebElement element = driver.FindElement(By.Id("TopPromotionButton"));
-            element.Click();
+            //   IWebElement element = driver.FindElement(By.Id("TopPromotionButton"));
+            //  element.Click();
             System.Threading.Thread.Sleep(3000);
             label4.Text = driver.Title;
             var dictionary = File.ReadLines(@"Football.csv").Select(line => line.Split(','));
@@ -64,7 +64,7 @@ namespace WindowsFormsApp1
             nav.FindCategory(category);
             betoption.closeOpenDivs();
             navigateBeforeBet(country, division);
-            driver.Navigate().Back();
+            driver.Navigate().GoToUrl("http://www.bet365.gr/#/HO");
         }
 
         private void navigateBeforeBet(string country, string division)
@@ -143,13 +143,9 @@ namespace WindowsFormsApp1
                         NotEnabled = false;
                     }
                 }
-                catch (WebDriverTimeoutException ex)
+                catch (Exception ex)
                 {
                     NotEnabled = true;
-                }
-                catch (NoSuchElementException)
-                {
-                    NotEnabled = false;
                 }
             }
         }
