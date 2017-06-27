@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium;
-
+using OpenQA.Selenium.Support.UI;
 
 namespace WindowsFormsApp1
 {
     class BetOption
     {
+        Navigation nav = new Navigation();       
+        private IWebDriver driver;  
         public void oneXTwo(string result)
         {
             try
@@ -29,7 +28,7 @@ namespace WindowsFormsApp1
                         break;
                 }
             }
-            catch (NoSuchElementException ex)
+            catch (NoSuchElementException)
             {
 
             }
@@ -41,6 +40,7 @@ namespace WindowsFormsApp1
                 switch (overunder)
                 {
                     case "over":
+                       // nav.FindAllBetCategories("over");
                         Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
                         break;
                     case "under":
@@ -50,17 +50,83 @@ namespace WindowsFormsApp1
                         break;
                 }
             }
-            catch (NoSuchElementException ex)
+            catch (NoSuchElementException)
             {
 
             }
         }
         public void closeOpenDivs()
         {
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
+            ReadOnlyCollection<IWebElement> elements = null;
+            driver = Form1.driver;         
+            bool NotEnabled = true;
+            while (NotEnabled)
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    elements = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".sm-Market_HeaderOpen")));
+                    if (elements != null)
+                    {
+                        NotEnabled = false;
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    NotEnabled = true;
+                }
+            }
+
+            foreach (IWebElement element in elements)
+            {
+                try
+                {
+                    element.Click();                   
+                }
+                catch (InvalidOperationException)
+                {
+                    //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                    //js.ExecuteScript("window.scrollTo(0,", element.Location.Y + ")");
+                    element.Click();
+                }
+            }
+        }
+        public void closeOpenDivsBeforeBet()
+        {
+            ReadOnlyCollection<IWebElement> secondelement = null;
+            driver = Form1.driver;            
+            bool NotEnabled = true;          
+            while (NotEnabled)
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    secondelement = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".gl-MarketGroup_Open ")));
+                    if (secondelement != null)
+                    {
+                        NotEnabled = false;
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    NotEnabled = true;
+                }
+            }
+
+            foreach (IWebElement element in secondelement)
+            {
+                try
+                {
+                    element.Click();
+                }
+                catch (InvalidOperationException)
+                {
+                    //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                    //js.ExecuteScript("window.scrollTo(0,", element.Location.Y + ")");
+                    element.Click();
+                }
+            }
         }
     }
 }
+

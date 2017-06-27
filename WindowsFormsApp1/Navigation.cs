@@ -1,49 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.ObjectModel;
 
 namespace WindowsFormsApp1
 {
     class Navigation
     {
-        IWebDriver driver;
-        IWebElement element;
-        Form1 rest = new Form1();
+        private ReadOnlyCollection<IWebElement> categories;
+        IWebDriver driver;       
         public void FindCategory(string category)
         {
-            driver = Form1.driver;
-            element = Form1.element;
-            int i = 1;
-            List<IWebElement> categories = new List<IWebElement>();
+            driver = Form1.driver;         
             bool FoundCat = true;
             while (FoundCat)
             {
                 try
                 {
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                    element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[1]/div/div/div[" + i + "]")));
-                    categories.Add(element);
-                    i++;
+                    categories = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".wn-Classification ")));
+                    if (categories != null)
+                    {
+                        FoundCat = false;
+                    }
                 }
-                catch (NoSuchElementException ex)
+                catch (WebDriverTimeoutException)
                 {
-                    FoundCat = false;
-                }
-                catch (WebDriverTimeoutException ex)
-                {
-                    FoundCat = false;
+                    FoundCat = true;
                 }
             }
-            foreach (var element in categories)
+            foreach (IWebElement element in categories)
             {
-                if (element.Text == category)
+                try
                 {
-                    element.Click();
+                    if (element.Text == category)
+                    {
+                        element.Click();
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
                 }
             }
         }
+        public void FindAllBetCategories(string category1)
+        {
+            ReadOnlyCollection<IWebElement> betcategories = null ;
+            driver = Form1.driver;
+            bool FoundCat = true;
+            while (FoundCat)
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    betcategories = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".gl-MarketGroupButton_Text")));
+                    if (betcategories != null)
+                    {
+                        FoundCat = false;
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    FoundCat = true;
+                }
+            }
+            foreach (IWebElement betcategory in betcategories)
+            {
+                try
+                {
+                    if (betcategory.Text == category1)
+                    {
+                        betcategory.Click();
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
+                }
+            }
+        }
+
     }
 }
