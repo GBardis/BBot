@@ -7,11 +7,14 @@ namespace WindowsFormsApp1
 {
     class Navigation
     {
+        IWebDriver driver;
+        IWebElement element;
         private ReadOnlyCollection<IWebElement> categories;
-        IWebDriver driver;       
+        Form1 rest = new Form1();
         public void FindCategory(string category)
         {
-            driver = Form1.driver;         
+            element = Form1.element;
+            driver = Form1.driver;
             bool FoundCat = true;
             while (FoundCat)
             {
@@ -44,42 +47,5 @@ namespace WindowsFormsApp1
                 }
             }
         }
-        public void FindAllBetCategories(string category1)
-        {
-            ReadOnlyCollection<IWebElement> betcategories = null ;
-            driver = Form1.driver;
-            bool FoundCat = true;
-            while (FoundCat)
-            {
-                try
-                {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                    betcategories = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".gl-MarketGroupButton_Text")));
-                    if (betcategories != null)
-                    {
-                        FoundCat = false;
-                    }
-                }
-                catch (WebDriverTimeoutException)
-                {
-                    FoundCat = true;
-                }
-            }
-            foreach (IWebElement betcategory in betcategories)
-            {
-                try
-                {
-                    if (betcategory.Text == category1)
-                    {
-                        betcategory.Click();
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    continue;
-                }
-            }
-        }
-
     }
 }

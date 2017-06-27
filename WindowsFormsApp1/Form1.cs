@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,25 +8,24 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System.IO;
-using System.Collections.ObjectModel;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        //private ReadOnlyCollection<IWebElement> elements = null;
         BetOption betoption = new BetOption();
-        Navigation nav = new Navigation();
         public static IWebDriver driver = new FirefoxDriver();
         Dictionary<string, string> dict = new Dictionary<string, string>();
         public static IWebElement element;
-        private ReadOnlyCollection<IWebElement> elements;
-
-
         public Form1()
         {
             InitializeComponent();
             driver.Manage().Window.Maximize();
             driver.Navigate().GoToUrl("http://www.bet365.gr/#/HO");
+            //   IWebElement element = driver.FindElement(By.Id("TopPromotionButton"));
+            //  element.Click();
+            System.Threading.Thread.Sleep(3000);
             label4.Text = driver.Title;
             var dictionary = File.ReadLines(@"Football.csv").Select(line => line.Split(','));
             foreach (string[] e in dictionary)
@@ -43,6 +43,7 @@ namespace WindowsFormsApp1
             IWebElement element2 = driver.FindElement(By.CssSelector(".hm-Login_LoginBtn"));
             element2.Click();
         }
+
         private void Wb_DocumentCompleted(Object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             // Print the document now that it is fully loaded.
@@ -50,8 +51,10 @@ namespace WindowsFormsApp1
             // Dispose the WebBrowser now that the task is complete. 
             ((WebBrowser)sender).Dispose();
         }
+
         private void button3_Click(object sender, EventArgs e)
-        {           
+        {
+            Navigation nav = new Navigation();
             string category = "Ποδόσφαιρο";
             string country = "Ην. Βασίλειο";
             string division = "Αγγλία - Πρέμιερ Λιγκ";
@@ -62,9 +65,11 @@ namespace WindowsFormsApp1
             navigateBeforeBet(country, division);
             driver.Navigate().GoToUrl("http://www.bet365.gr/#/HO");
         }
+
         private void navigateBeforeBet(string country, string division)
         {
-            bool flag = false;     
+            ReadOnlyCollection<IWebElement> elements = null;
+            bool flag = false;
             List<string> games = new List<string>();
 
             try
@@ -84,7 +89,8 @@ namespace WindowsFormsApp1
                 WaitForElementVisible(By.XPath(dict[division]));
             }
             if (flag)
-            {             
+            {
+
                 bool NotEnabled = true;
                 while (NotEnabled)
                 {
@@ -115,13 +121,14 @@ namespace WindowsFormsApp1
                     break;
                 }
             }
-            betoption.closeOpenDivsBeforeBet();           
+            //betoption.closeOpenDivsBeforeBet();
             betoption.overUnder("over");
             placeMaxBet();
         }
-        public static void sleep(int time)
+
+        private void sleep()
         {
-            System.Threading.Thread.Sleep(time);
+            System.Threading.Thread.Sleep(300);
 
         }
         public static void WaitForElementVisible(By locator)
@@ -132,7 +139,7 @@ namespace WindowsFormsApp1
                 try
                 {
                     WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                    element = wait.Until(ExpectedConditions.ElementToBeClickable(locator));
+                    element = wait.Until<IWebElement>(ExpectedConditions.ElementToBeClickable(locator));
                     if (element.Enabled)
                     {
                         element.Click();

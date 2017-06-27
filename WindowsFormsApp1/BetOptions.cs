@@ -7,8 +7,6 @@ namespace WindowsFormsApp1
 {
     class BetOption
     {
-        Navigation nav = new Navigation();       
-        private IWebDriver driver;  
         public void oneXTwo(string result)
         {
             try
@@ -40,7 +38,6 @@ namespace WindowsFormsApp1
                 switch (overunder)
                 {
                     case "over":
-                       // nav.FindAllBetCategories("over");
                         Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/div[8]/div[2]/div/div[2]/div[2]"));
                         break;
                     case "under":
@@ -57,8 +54,9 @@ namespace WindowsFormsApp1
         }
         public void closeOpenDivs()
         {
+            IWebDriver driver;
             ReadOnlyCollection<IWebElement> elements = null;
-            driver = Form1.driver;         
+            driver = Form1.driver;
             bool NotEnabled = true;
             while (NotEnabled)
             {
@@ -81,42 +79,6 @@ namespace WindowsFormsApp1
             {
                 try
                 {
-                    element.Click();                   
-                }
-                catch (InvalidOperationException)
-                {
-                    //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-                    //js.ExecuteScript("window.scrollTo(0,", element.Location.Y + ")");
-                    element.Click();
-                }
-            }
-        }
-        public void closeOpenDivsBeforeBet()
-        {
-            ReadOnlyCollection<IWebElement> secondelement = null;
-            driver = Form1.driver;            
-            bool NotEnabled = true;          
-            while (NotEnabled)
-            {
-                try
-                {
-                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
-                    secondelement = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".gl-MarketGroup_Open ")));
-                    if (secondelement != null)
-                    {
-                        NotEnabled = false;
-                    }
-                }
-                catch (WebDriverTimeoutException)
-                {
-                    NotEnabled = true;
-                }
-            }
-
-            foreach (IWebElement element in secondelement)
-            {
-                try
-                {
                     element.Click();
                 }
                 catch (InvalidOperationException)
@@ -129,4 +91,3 @@ namespace WindowsFormsApp1
         }
     }
 }
-
