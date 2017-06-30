@@ -37,11 +37,11 @@ namespace WindowsFormsApp1
                     FoundCat = false;
                 }
             }
-            foreach (var element in categories)
+            foreach (var z in categories)
             {
-                if (element.Text == category)
+                if (z.Text == category)
                 {
-                    element.Click();
+                    z.Click();
                 }
             }
         }
