@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium;
-
+using OpenQA.Selenium.Support.UI;
 
 namespace WindowsFormsApp1
 {
@@ -29,7 +26,7 @@ namespace WindowsFormsApp1
                         break;
                 }
             }
-            catch (NoSuchElementException ex)
+            catch (NoSuchElementException)
             {
 
             }
@@ -50,17 +47,47 @@ namespace WindowsFormsApp1
                         break;
                 }
             }
-            catch (NoSuchElementException ex)
+            catch (NoSuchElementException)
             {
 
             }
         }
         public void closeOpenDivs()
         {
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[1]/div[1]/div"));
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[4]/div[1]"));
-            Form1.WaitForElementVisible(By.XPath("html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div[3]/div[2]/div[8]/div[1]"));
+            IWebDriver driver;
+            ReadOnlyCollection<IWebElement> elements = null;
+            driver = Form1.driver;
+            bool NotEnabled = true;
+            while (NotEnabled)
+            {
+                try
+                {
+                    WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(100));
+                    elements = wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.CssSelector(".sm-Market_HeaderOpen")));
+                    if (elements != null)
+                    {
+                        NotEnabled = false;
+                    }
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    NotEnabled = true;
+                }
+            }
+
+            foreach (IWebElement element in elements)
+            {
+                try
+                {
+                    element.Click();
+                }
+                catch (InvalidOperationException)
+                {
+                    //IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+                    //js.ExecuteScript("window.scrollTo(0,", element.Location.Y + ")");
+                    element.Click();
+                }
+            }
         }
     }
 }
