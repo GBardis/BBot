@@ -32,6 +32,13 @@ namespace WindowsFormsApp1
                     FoundCat = true;
                 }
             }
+<<<<<<< HEAD
+            foreach (var z in categories)
+            {
+                if (z.Text == category)
+                {
+                    z.Click();
+=======
             foreach (IWebElement element in categories)
             {
                 try
@@ -44,6 +51,7 @@ namespace WindowsFormsApp1
                 catch (InvalidOperationException)
                 {
                     continue;
+>>>>>>> e2f9e190b8d2f8a49875274176d01f66e5473dfc
                 }
             }
         }
